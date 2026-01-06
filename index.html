@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ScamGuard</title>
+
+  <!-- Pixel / Hacker Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #0b0f14; /* dark charcoal */
+      color: #39ff14; /* neon green */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: #02040a;
+      border-bottom: 1px solid #39ff14;
+      display: flex;
+      align-items: center;
+      padding-left: 24px;
+      font-size: 22px;
+      letter-spacing: 1px;
+      box-shadow: 0 0 12px rgba(57,255,20,0.4);
+      z-index: 100;
+    }
+
+    body {
+      padding-top: 70px;
+    }
+
+    /* MAIN TERMINAL BOX */
+    .card {
+      width: 90%;
+      max-width: 700px;
+      background: #02040a;
+      border: 2px solid #39ff14;
+      border-radius: 6px;
+      padding: 30px;
+      box-shadow: 0 0 20px rgba(57,255,20,0.35);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 140px;
+      background: #000;
+      color: #39ff14;
+      border: 1px solid #39ff14;
+      padding: 14px;
+      font-size: 16px;
+      resize: none;
+      outline: none;
+      box-shadow: inset 0 0 10px rgba(57,255,20,0.3);
+    }
+
+    textarea::placeholder {
+      color: #2ecc71;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 14px;
+      font-size: 16px;
+      background: #000;
+      color: #39ff14;
+      border: 2px solid #39ff14;
+      cursor: pointer;
+      letter-spacing: 1px;
+      box-shadow: 0 0 10px rgba(57,255,20,0.4);
+    }
+
+    button:hover {
+      background: #39ff14;
+      color: #000;
+    }
+
+    /* RESULT BOX */
+    .result {
+      margin-top: 28px;
+      padding: 24px;
+      border: 2px dashed #39ff14;
+      display: none;
+      box-shadow: 0 0 16px rgba(57,255,20,0.5);
+    }
+
+    .result h2 {
+      text-align: center;
+      font-size: 26px;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+
+    .risk {
+      text-align: center;
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+
+    .safe {
+      border-color: #00ff88;
+    }
+
+    .suspicious {
+      border-color: #ffcc00;
+      color: #ffcc00;
+    }
+
+    .scam {
+      border-color: #ff0033;
+      color: #ff0033;
+    }
+
+    .icons {
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .advice {
+      margin-top: 10px;
+      font-size: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    🛡 SCAMGUARD :: TERMINAL MODE
+  </div>
+
+  <!-- MAIN -->
+  <div class="card">
+    <h1>MESSAGE SCAN INTERFACE</h1>
+
+    <textarea id="message" placeholder="> PASTE MESSAGE TO ANALYZE..."></textarea>
+
+    <button onclick="checkScam()">▶ RUN SCAN</button>
+
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    function checkScam() {
+      const msg = document.getElementById("message").value.toLowerCase();
+      const result = document.getElementById("result");
+
+      if (!msg.trim()) {
+        alert("INPUT REQUIRED");
+        return;
+      }
+
+      const keywords = ["otp", "bank", "upi", "refund", "prize", "kyc", "click"];
+      const detected = keywords.filter(word => msg.includes(word));
+      const score = detected.length;
+
+      result.style.display = "block";
+      result.className = "result";
+
+      if (score >= 2) {
+        result.classList.add("scam");
+        result.innerHTML = `
+          <div class="icons">🚨</div>
+          <h2>SCAM DETECTED</h2>
+          <div class="risk">RISK LEVEL: HIGH</div>
+          <div>KEYWORDS: ${detected.join(", ")}</div>
+          <div class="advice">ACTION: DO NOT CLICK LINKS OR SHARE OTP</div>
+        `;
+      } else if (score === 1) {
+        result.classList.add("suspicious");
+        result.innerHTML = `
+          <div class="icons">⚠</div>
+          <h2>SUSPICIOUS MESSAGE</h2>
+          <div class="risk">RISK LEVEL: MEDIUM</div>
+          <div>KEYWORD: ${detected.join(", ")}</div>
+          <div class="advice">ACTION: VERIFY SENDER BEFORE PROCEEDING</div>
+        `;
+      } else {
+        result.classList.add("safe");
+        result.innerHTML = `
+          <div class="icons">✅</div>
+          <h2>MESSAGE SAFE</h2>
+          <div class="risk">RISK LEVEL: LOW</div>
+          <div class="advice">NO MALICIOUS PATTERNS FOUND</div>
+        `;
+      }
+    }
+  </script>
+
+</body>
+</html>
